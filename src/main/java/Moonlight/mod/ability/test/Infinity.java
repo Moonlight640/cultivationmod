@@ -16,13 +16,12 @@ import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.sounds.SoundEvents;
 import net.minecraft.sounds.SoundSource;
 import net.minecraft.world.damagesource.DamageSource;
-import net.minecraft.world.entity.Entity;
-import net.minecraft.world.entity.ExperienceOrb;
-import net.minecraft.world.entity.LivingEntity;
-import net.minecraft.world.entity.PathfinderMob;
+import net.minecraft.world.entity.*;
 import net.minecraft.world.entity.ai.attributes.AttributeInstance;
 import net.minecraft.world.entity.ai.attributes.Attributes;
+import net.minecraft.world.entity.animal.IronGolem;
 import net.minecraft.world.entity.item.ItemEntity;
+import net.minecraft.world.entity.monster.warden.Warden;
 import net.minecraft.world.entity.projectile.AbstractArrow;
 import net.minecraft.world.entity.projectile.Projectile;
 import net.minecraft.world.level.Level;
@@ -44,7 +43,7 @@ import java.util.*;
 // TODO: CHANGE INFINITY TO LIKE A QI PULSE (FREEZES PROJECTILES FOR A QUICK SECOND AND STOPS THEIR MOVEMENT)
 public class Infinity extends Ability implements Ability.IToggled {
     private static final double SLOWING_FACTOR = 0.0001D;
-    private static final double RANGE = 2.0D; //2
+    private static final double RANGE = 3.0D;
 
     @Override
     public boolean isScalable(LivingEntity owner) {
@@ -60,7 +59,6 @@ public class Infinity extends Ability implements Ability.IToggled {
     public boolean isUnlocked(LivingEntity owner) {
         return true;
     }
-
 
     @Override
     public boolean shouldTrigger(PathfinderMob owner, @Nullable LivingEntity target) {
@@ -127,12 +125,12 @@ public class Infinity extends Ability implements Ability.IToggled {
             }
         }
 
-        public void add(LivingEntity source, LivingEntity target) {
-            if (!this.frozen.containsKey(target.getUUID())) {
-                this.frozen.put(target.getUUID(), new FrozenProjectileNBT(source, target));
-                this.setDirty();
-            }
-        }
+//        public void add(LivingEntity source, LivingEntity target) {
+//            if (!this.frozen.containsKey(target.getUUID())) {
+//                this.frozen.put(target.getUUID(), new FrozenProjectileNBT(source, target));
+//                this.setDirty();
+//            }
+//        }
 
         public void tick(ServerLevel level) {
             Iterator<FrozenProjectileNBT> iter = this.frozen.values().iterator();
@@ -141,10 +139,19 @@ public class Infinity extends Ability implements Ability.IToggled {
                 FrozenProjectileNBT nbt = iter.next();
                 Entity projectile = level.getEntity(nbt.getTarget());
 
-                if (!(level.getEntities() instanceof LivingEntity entity) || entity.isDeadOrDying()) {
+                if (!(level.getEntity(nbt.getSource()) instanceof LivingEntity entity) || entity.isDeadOrDying()) {
                     if (projectile != null) {
                         System.out.println("Proj Name: " + projectile.getName() + "\nDelta Movement: " + nbt.getMovement());
+
                         projectile.setDeltaMovement(nbt.getMovement());
+                        projectile.setNoGravity(true);
+
+                        projectile.setXRot(nbt.getXRot());
+                        projectile.setYRot(nbt.getYRot());
+                        projectile.xRotO = nbt.getXRot();
+                        projectile.yRotO = nbt.getYRot();
+                        //projectile.setOldPosAndRot();
+
                         projectile.hurtMarked = true;
                     }
                     iter.remove();
@@ -164,20 +171,39 @@ public class Infinity extends Ability implements Ability.IToggled {
                 float dy = (float) (start.y - end.y);
                 float dz = (float) (start.z - end.z);
                 float distance = (float) Math.sqrt(dx * dx + dy * dy + dz * dz);
+
                 if (CultivationAbilities.hasToggled(entity, CultivationAbilities.INFINITY.get()) && distance <= RANGE) {
                     Vec3 original = nbt.getMovement();
-                    projectile.setDeltaMovement(original.scale(Math.max(SLOWING_FACTOR, distance * SLOWING_FACTOR)));
+                    double t = Math.min(distance / (RANGE + 5), 0.75);
+                    double speedMultiplier = t * t * t * t;
+                    if (distance <= 1.0F) speedMultiplier = 0.0001D;
+                    projectile.setDeltaMovement(projectile.getDeltaMovement().scale(Math.min(speedMultiplier, distance * speedMultiplier)));
                     System.out.println("Original Movement: " + original);
-                    //projectile.setNoGravity(true);
+
+                    projectile.setXRot(nbt.getXRot());
+                    projectile.setYRot(nbt.getYRot());
+                    projectile.xRotO = nbt.getXRot();
+                    projectile.yRotO = nbt.getYRot();
+                    //projectile.setOldPosAndRot();
+
+                    projectile.setNoGravity(true);
                     projectile.hurtMarked = true;
                 } else {
-                    projectile.setDeltaMovement(nbt.getMovement());
-                    //projectile.setNoGravity(false);
+                    projectile.setDeltaMovement(0D, 0D, 0D);//nbt.getMovement());
+                    projectile.setNoGravity(false);
+
+                    projectile.setXRot(nbt.getXRot());
+                    projectile.setYRot(nbt.getYRot());
+                    projectile.xRotO = nbt.getXRot();
+                    projectile.yRotO = nbt.getYRot();
+                    //projectile.setOldPosAndRot();
+
                     System.out.println("Movement Restore: " + nbt.getMovement() + "\nRange: " + (distance <= RANGE));
 
                     projectile.hurtMarked = true;
                     iter.remove();
                     this.setDirty();
+
                 }
             }
         }
@@ -192,6 +218,9 @@ public class Infinity extends Ability implements Ability.IToggled {
             this.putDouble("movement_x", movement.x);
             this.putDouble("movement_y", movement.y);
             this.putDouble("movement_z", movement.z);
+
+            this.putFloat("xRot", target.getXRot());
+            this.putFloat("yRot", target.getYRot());
         }
 
         public FrozenProjectileNBT(LivingEntity source, LivingEntity target) {
@@ -202,6 +231,9 @@ public class Infinity extends Ability implements Ability.IToggled {
             this.putDouble("movement_x", movement.x);
             this.putDouble("movement_y", movement.y);
             this.putDouble("movement_z", movement.z);
+
+            this.putFloat("xRot", target.getXRot());
+            this.putFloat("yRot", target.getYRot());
         }
 
         public FrozenProjectileNBT(CompoundTag nbt) {
@@ -211,6 +243,9 @@ public class Infinity extends Ability implements Ability.IToggled {
             this.putDouble("movement_x", nbt.getDouble("movement_x"));
             this.putDouble("movement_y", nbt.getDouble("movement_y"));
             this.putDouble("movement_z", nbt.getDouble("movement_z"));
+
+            this.putFloat("xRot", nbt.getFloat("xRot"));
+            this.putFloat("yRot", nbt.getFloat("yRot"));
         }
 
         public UUID getSource() {
@@ -226,6 +261,14 @@ public class Infinity extends Ability implements Ability.IToggled {
             double y = this.getDouble("movement_y");
             double z = this.getDouble("movement_z");
             return new Vec3(x, y, z);
+        }
+
+        public float getXRot() {
+            return this.getFloat("xRot");
+        }
+
+        public float getYRot() {
+            return this.getFloat("yRot");
         }
     }
 
@@ -279,12 +322,19 @@ public class Infinity extends Ability implements Ability.IToggled {
             }
 
             for (LivingEntity entityTarget : level.getEntitiesOfClass(LivingEntity.class, target.getBoundingBox().inflate(RANGE))) {
-                if (entityTarget == target) {
+                if (entityTarget == target || entityTarget instanceof Warden) {
                     continue;
+                }
+                if (entityTarget.getCapability(DataHandler.INSTANCE).isPresent()) {
+                    IPlayerData cap = entityTarget.getCapability(DataHandler.INSTANCE).resolve().orElseThrow();
                 }
 
                 double distance = target.distanceTo(entityTarget);
-                entityTarget.setDeltaMovement(entityTarget.getDeltaMovement().scale(Math.min(SLOWING_FACTOR, distance * SLOWING_FACTOR)));
+                double t = Math.min(distance / (RANGE + 5), 0.75);
+                double speedMultiplier = t * t * t * t;
+                if (distance <= 1.0F) speedMultiplier = 0.0001D;
+
+                entityTarget.setDeltaMovement(entityTarget.getDeltaMovement().scale(Math.min(speedMultiplier, distance * speedMultiplier)));//Math.min(SLOWING_FACTOR, distance * SLOWING_FACTOR)));
             }
         }
 
@@ -301,6 +351,11 @@ public class Infinity extends Ability implements Ability.IToggled {
 
             if (!(source.getDirectEntity() instanceof Projectile)) {
                 if (source.getEntity() instanceof LivingEntity attacker) {
+                    if (attacker instanceof Warden || attacker instanceof IronGolem) {
+                        target.level().playSound(null, target.getX(), target.getY(), target.getZ(), SoundEvents.AMETHYST_BLOCK_BREAK, SoundSource.MASTER, 1.0F, 1.0F);
+                        return;
+                    }
+
                     IPlayerData cap = attacker.getCapability(DataHandler.INSTANCE).resolve().orElse(null);
                     if (cap != null) {
 //                        if (cap.hasToggled()) { // ABILITY THAT BYPASSES THIS?
