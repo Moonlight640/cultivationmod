@@ -111,7 +111,7 @@ public class QiFlow extends Ability implements Ability.IToggled {
             }
 
             EntityUtil.applyModifier(owner, Attributes.MOVEMENT_SPEED, MOVEMENT_SPEED_UUID, "Movement speed",
-                    Math.min(maxSpeed, newSpeed * this.getPower(owner)), AttributeModifier.Operation.ADDITION);
+                    Math.min(maxSpeed, ((newSpeed * this.getPower(owner)) * cap.getOutput())), AttributeModifier.Operation.ADDITION);
         }
     }
 

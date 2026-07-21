@@ -7,6 +7,7 @@ import Moonlight.mod.effects.CultivationEffects;
 import Moonlight.mod.hud.ClientOverlays;
 import Moonlight.mod.items.ModItems;
 import Moonlight.mod.network.PacketHandler;
+import Moonlight.mod.sounds.CultivationSounds;
 import Moonlight.mod.util.ModCreativeModeTabs;
 import com.mojang.logging.LogUtils;
 import net.minecraftforge.api.distmarker.Dist;
@@ -38,6 +39,7 @@ public class CultivationMod {
 
         ModItems.register(modEventBus);
         ModCreativeModeTabs.register(modEventBus);
+        CultivationSounds.SOUNDS.register(modEventBus);
         CultivationEffects.EFFECTS.register(modEventBus);
         CultivationAbilities.ABILITIES.register(modEventBus);
 

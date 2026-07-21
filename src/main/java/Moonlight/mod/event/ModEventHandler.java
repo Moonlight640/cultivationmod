@@ -6,6 +6,7 @@ import Moonlight.mod.data.capability.IPlayerData;
 import Moonlight.mod.data.capability.playerStats.MartialRealm;
 import Moonlight.mod.network.PacketHandler;
 import Moonlight.mod.network.packets.s2c.SyncPlayerDataS2C;
+import Moonlight.mod.util.CultivationUtil;
 import net.minecraft.core.BlockPos;
 import net.minecraft.network.chat.Component;
 import net.minecraft.server.level.ServerLevel;
@@ -27,6 +28,7 @@ import net.minecraft.world.phys.Vec3;
 import net.minecraftforge.event.TickEvent;
 import net.minecraftforge.event.entity.EntityTeleportEvent;
 import net.minecraftforge.event.entity.living.*;
+import net.minecraftforge.event.entity.player.AttackEntityEvent;
 import net.minecraftforge.event.entity.player.PlayerEvent;
 import net.minecraftforge.event.level.BlockEvent;
 import net.minecraftforge.event.level.ExplosionEvent;
@@ -113,8 +115,9 @@ public class ModEventHandler {
                     if (!player.getCapability(DataHandler.INSTANCE).isPresent()) continue;
 
                     IPlayerData cap = player.getCapability(DataHandler.INSTANCE).resolve().orElseThrow();
-//                    //Increase qi up a bit
-//                    //Recover qi from sleep
+                    //Increase qi up a bit
+                    //Recover qi from sleep
+                    //Gain a small multiplier instead maybe? and increase qi Regen momentarily? (for like 10seconds?)
                     PacketHandler.sendToClient(new SyncPlayerDataS2C(cap.serializeNBT()), player);
                 }
             }
@@ -149,6 +152,31 @@ public class ModEventHandler {
         }
 
         @SubscribeEvent
+        public static void onPlayerClone(PlayerEvent.Clone event) {
+            Player original = event.getOriginal();
+            Player player = event.getEntity();
+
+            original.reviveCaps();
+
+            IPlayerData oldCap = original.getCapability(DataHandler.INSTANCE).resolve().orElseThrow();
+            IPlayerData newCap = player.getCapability(DataHandler.INSTANCE).resolve().orElseThrow();
+
+            newCap.deserializeNBT(oldCap.serializeNBT());
+
+            if (event.isWasDeath()) {
+                newCap.setQi(newCap.getMaxQi());
+                newCap.resetCooldowns();
+                newCap.resetDisable();
+                newCap.clearToggled();
+
+                if (!player.level().isClientSide) {
+                    PacketHandler.sendToClient(new SyncPlayerDataS2C(newCap.serializeNBT()), (ServerPlayer) player);
+                }
+            }
+            original.invalidateCaps();
+        }
+
+        @SubscribeEvent
         public static void onLivingTick(LivingEvent.LivingTickEvent event) {
             LivingEntity owner = event.getEntity();
 
@@ -178,7 +206,8 @@ public class ModEventHandler {
 
             if (owner instanceof Player player) {
                 //if ( (cap.getType() == JujutsuType.SORCERER && ConfigHolder.SERVER.sorcererSaturation.get()) || (cap.getType() == JujutsuType.CURSE && ConfigHolder.SERVER.curseSaturation.get()) ) {
-                    player.getFoodData().setFoodLevel(20);
+                    //player.getFoodData().setFoodLevel(20);
+                    // TODO: add qi pills that give hidden saturation for a small amount of time and fill hunger (grain pills)
                 //}
 
             }
@@ -189,9 +218,9 @@ public class ModEventHandler {
 
             LivingEntity victim = event.getEntity();
 
-            event.getEntity().getCapability(DataHandler.INSTANCE).ifPresent(cap -> {
-                event.setDistance(event.getDistance() * 0.33F);
-            });
+//            victim.getCapability(DataHandler.INSTANCE).ifPresent(cap -> {
+//                event.setDistance(event.getDistance() * 0.33F);
+//            });
         }
 
         @SubscribeEvent
@@ -260,17 +289,17 @@ public class ModEventHandler {
 
             if (!victim.getCapability(DataHandler.INSTANCE).isPresent()) return;
 
-            //IPlayerData cap = victim.getCapability(DataHandler.INSTANCE).resolve().orElseThrow();
+            IPlayerData cap = victim.getCapability(DataHandler.INSTANCE).resolve().orElseThrow();
 
-            //float armor = SorcererUtil.getDefense(cap.getExperience());
+            double armor = CultivationUtil.getDefense(cap.getBodyExperience());
 
-            //if (victim instanceof Player) {
-                //armor*=ConfigHolder.SERVER.jujutsuDefenseMult.get().floatValue();
-            //}
+//            if (victim instanceof Player) {
+//                armor*=ConfigHolder.SERVER.jujutsuDefenseMult.get().floatValue();
+//            }
 
 
-            //float blocked = event.getAmount()/armor;
-            //event.setAmount(blocked);
+            double blocked = event.getAmount()/armor;
+            event.setAmount((float) blocked);
         }
 
         @SubscribeEvent
