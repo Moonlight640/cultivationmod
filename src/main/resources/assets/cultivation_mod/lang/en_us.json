@@ -1,0 +1,43 @@
+{
+  "creative_mode_tab.cultivation_mod.main": "Cultivation Mod",
+
+  "item.cultivation_mod.heavenly_demon_cult_manual": "Heavenly Demon's First Step",
+  "item.cultivation_mod.shaolin_manual": "Shaolin's Basic Manual",
+  "item.cultivation_mod.basic_manual": "Basic Manual",
+  "item.cultivation_mod.no_manual": "No Manual",
+
+  "item.cultivation_mod.test_pill": "Test Pill",
+  "item.cultivation_mod.mount_hua_pill": "Mount Hua's Pill",
+  "item.cultivation_mod.shaolin_pill": "Shaolin's Pill",
+  "item.cultivation_mod.wudang_pill": "Wudang's Pill",
+  "item.cultivation_mod.beggar_pill": "Beggar's Pill",
+  "item.cultivation_mod.heavenly_demon_cult_pill": "Heavenly Demon Cult's Pill",
+
+  "key.category.cultivation_mod": "Mod Category",
+  "key.cultivation_mod.open_cultivation_menu": "Show Stats",
+  "key.cultivation_mod.toggle_meditation": "Toggle Meditation",
+  "key.cultivation_mod.increase_output": "Increase Output",
+  "key.cultivation_mod.decrease_output": "Decrease Output",
+  "key.cultivation_mod.activate_qi_shield": "Activate Qi Shield",
+  "key.cultivation_mod.activate_qi_flow": "Activate Qi Flow",
+
+  "manual.cultivation_mod.heavenly_demons_first_step": "Heavenly Demon's First Step",
+  "manual.cultivation_mod.shaolin_basic_manual": "Shaolin's Basic Manual",
+  "manual.cultivation_mod.basic_manual": "Basic Manual",
+  "manual.cultivation_mod.no_manual": "No Manual",
+
+  "martial_realm.cultivation_mod.regular": "Regular",
+  "martial_realm.cultivation_mod.third_rate": "Third Rate",
+  "martial_realm.cultivation_mod.second_rate": "Second Rate",
+  "martial_realm.cultivation_mod.semi_first_rate": "Semi First Rate",
+  "martial_realm.cultivation_mod.first_rate": "First Rate",
+  "martial_realm.cultivation_mod.master": "Master",
+  "martial_realm.cultivation_mod.grandmaster": "Grandmaster",
+  "martial_realm.cultivation_mod.transcendent": "Transcendent",
+
+  "advancements.cultivation_mod.root.title": "Cultivation Journey",
+  "advancements.cultivation_mod.root.description": "Your journey of cultivation has just begun.",
+
+  "gui.cultivation_mod.health_bar_overlay.output": "Output: %s",
+  "gui.cultivation_mod.health_bar_overlay.experience": "Experience: %s"
+}
