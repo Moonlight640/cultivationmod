@@ -17,8 +17,12 @@ import net.minecraft.sounds.SoundSource;
 import net.minecraft.world.damagesource.DamageSource;
 import net.minecraft.world.entity.*;
 import net.minecraft.world.entity.animal.IronGolem;
+import net.minecraft.world.entity.boss.EnderDragonPart;
+import net.minecraft.world.entity.boss.enderdragon.EnderDragon;
+import net.minecraft.world.entity.boss.wither.WitherBoss;
 import net.minecraft.world.entity.monster.warden.Warden;
 import net.minecraft.world.entity.projectile.Projectile;
+import net.minecraft.world.entity.projectile.WitherSkull;
 import net.minecraft.world.level.saveddata.SavedData;
 import net.minecraft.world.phys.EntityHitResult;
 import net.minecraft.world.phys.Vec3;
@@ -81,6 +85,24 @@ public class Infinity extends Ability implements Ability.IToggled {
     @Override
     public void onDisabled(LivingEntity owner) {
         owner.sendSystemMessage(Component.literal("Infinity Off"));
+    }
+
+    private static boolean ignoresInfinity(Entity entity) {
+        if (entity instanceof EnderDragon
+                || entity instanceof EnderDragonPart
+                || entity instanceof WitherBoss
+                || entity instanceof WitherSkull
+                || entity instanceof Warden
+        ) {
+            return true;
+        }
+
+        if (entity instanceof AreaEffectCloud cloud) {
+            Entity owner = cloud.getOwner();
+            return owner instanceof EnderDragon;
+        }
+
+        return false;
     }
 
 
@@ -290,6 +312,7 @@ public class Infinity extends Ability implements Ability.IToggled {
                     FrozenProjectileData.IDENTIFIER);
 
             Projectile projectile = event.getProjectile();
+            if (ignoresInfinity(projectile)) return;
             if (!HelperMethods.isBlockable(entity, projectile)) return;
 
             data.add(entity, projectile);
@@ -309,13 +332,14 @@ public class Infinity extends Ability implements Ability.IToggled {
             if (!CultivationAbilities.hasToggled(target, CultivationAbilities.INFINITY.get())) return;
 
             for (Projectile projectile : level.getEntitiesOfClass(Projectile.class, target.getBoundingBox().inflate(RANGE))) {
+                if (ignoresInfinity(projectile)) continue;
                 if (!HelperMethods.isBlockable(target, projectile)) continue;
 
                 data.add(target, projectile);
             }
 
             for (LivingEntity entityTarget : level.getEntitiesOfClass(LivingEntity.class, target.getBoundingBox().inflate(RANGE))) {
-                if (entityTarget == target || entityTarget instanceof Warden) {
+                if (entityTarget == target || ignoresInfinity(entityTarget)) {
                     continue;
                 }
                 if (entityTarget.getCapability(DataHandler.INSTANCE).isPresent()) {
@@ -339,12 +363,15 @@ public class Infinity extends Ability implements Ability.IToggled {
             if (!CultivationAbilities.hasToggled(target, CultivationAbilities.INFINITY.get())) return;
 
             DamageSource source = event.getSource();
+            if (ignoresInfinity(source.getDirectEntity()) || ignoresInfinity(source.getEntity())) {
+                return;
+            }
 
             if (!HelperMethods.isBlockable(target, source)) return;
 
             if (!(source.getDirectEntity() instanceof Projectile)) {
                 if (source.getEntity() instanceof LivingEntity attacker) {
-                    if (attacker instanceof Warden || attacker instanceof IronGolem) {
+                    if (ignoresInfinity(attacker) || attacker instanceof IronGolem) {
                         target.level().playSound(null, target.getX(), target.getY(), target.getZ(), SoundEvents.AMETHYST_BLOCK_BREAK, SoundSource.MASTER, 1.0F, 1.0F);
                         return;
                     }
