@@ -32,6 +32,10 @@ public class ModCreativeModeTabs {
                 output.accept(ModItems.BEGGAR_PILL.get());
                 output.accept(ModItems.HEAVENLY_DEMON_CULT_PILL.get());
 
+                output.accept(ModItems.COPPER_COIN.get());
+                output.accept(ModItems.SILVER_COIN.get());
+                output.accept(ModItems.GOLD_COIN.get());
+
 
     }).build());
 

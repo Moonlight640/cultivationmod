@@ -103,8 +103,6 @@ public class PlayerData implements IPlayerData {
     private int disable;
 
 
-    private final EnumMap<CoinType, Integer> coins;
-
 
 
     private static final UUID MAX_HEALTH_UUID = UUID.fromString("72ff5080-3a82-4a03-8493-3be970039cfe");
@@ -179,11 +177,6 @@ public class PlayerData implements IPlayerData {
         this.disrupted = new HashMap<>();
         this.durations = new HashMap<>();
 
-
-        this.coins = new EnumMap<>(CoinType.class);
-        coins.put(CoinType.COPPER, 0);
-        coins.put(CoinType.SILVER, 0);
-        coins.put(CoinType.GOLD, 0);
     }
 
     @Override
@@ -1253,25 +1246,6 @@ public class PlayerData implements IPlayerData {
     }
 
     @Override
-    public int getCoins(CoinType coinType) {
-        return this.coins.get(coinType);
-    }
-
-    @Override
-    public void addCoins(CoinType coinType, int amount) {
-        this.coins.merge(coinType, amount, Integer::sum);
-    }
-
-    @Override
-    public boolean removeCoins(CoinType coinType, int amount) {
-        int current = this.coins.get(coinType);
-        if (current < amount) return false;
-
-        this.coins.put(coinType, current - amount);
-        return true;
-    }
-
-    @Override
     public void setDisable(int duration) {
         if (this.getDisable() >= duration) return;
         this.disable = duration;
@@ -1337,11 +1311,6 @@ public class PlayerData implements IPlayerData {
         nbt.putBoolean("consumingPill", this.consumingPill);
 
         nbt.putInt("disable", this.disable);
-
-
-        for (CoinType coinType : CoinType.values()) {
-            nbt.putInt(coinType.name(), this.coins.get(coinType));
-        }
 
 
         ListTag delayedTickEventsTag = new ListTag();
@@ -1501,11 +1470,6 @@ public class PlayerData implements IPlayerData {
         this.consumingPill = nbt.getBoolean("consumingPill");
 
         this.disable = nbt.getInt("disable");
-
-
-        for (CoinType coinType : CoinType.values()) {
-            coins.put(coinType, nbt.getInt(coinType.name()));
-        }
 
 
         ListTag delayedTickEventsTag = nbt.getList("delayedTickEvents", Tag.TAG_COMPOUND);

@@ -55,4 +55,12 @@ public class ModItems {
     public static final RegistryObject<Item> HEAVENLY_DEMON_CULT_PILL = ITEMS.register("heavenly_demon_cult_pill",
             () -> new PillItem(new Item.Properties().stacksTo(16).food(PillItem.PILL),
                     2.0f, 2.0f, 2.0f, 30, true));
+
+
+    public static final RegistryObject<Item> COPPER_COIN = ITEMS.register("copper_coin",
+            () -> new Item(new Item.Properties().stacksTo(64)));
+    public static final RegistryObject<Item> SILVER_COIN = ITEMS.register("silver_coin",
+            () -> new Item(new Item.Properties().stacksTo(64)));
+    public static final RegistryObject<Item> GOLD_COIN = ITEMS.register("gold_coin",
+            () -> new Item(new Item.Properties().stacksTo(64)));
 }

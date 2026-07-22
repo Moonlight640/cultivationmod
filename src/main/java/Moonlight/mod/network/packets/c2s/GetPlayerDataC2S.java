@@ -2,6 +2,7 @@ package Moonlight.mod.network.packets.c2s;
 
 import Moonlight.mod.data.DataHandler;
 import Moonlight.mod.data.capability.IPlayerData;
+import Moonlight.mod.data.capability.playerStats.CoinType;
 import net.minecraft.network.FriendlyByteBuf;
 import net.minecraft.network.chat.Component;
 import net.minecraft.server.level.ServerPlayer;
