@@ -27,6 +27,10 @@ public interface IPlayerData {
     void maxOutput();
     float getOutput();
 
+    int getCoins(CoinType coinType);
+    void addCoins(CoinType coinType, int amount);
+    boolean removeCoins(CoinType coinType, int amount);
+
     // Core Attributes
     double getStrength();
     double getAgility();
