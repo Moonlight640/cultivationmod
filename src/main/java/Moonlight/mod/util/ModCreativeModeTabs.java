@@ -25,7 +25,7 @@ public class ModCreativeModeTabs {
                 output.accept(ModItems.HEAVENLY_DEMONS_FIRST_STEP.get());
 
 
-                output.accept(ModItems.TEST_PILL.get());
+                output.accept(ModItems.GRAIN_PILL.get());
                 output.accept(ModItems.MOUNT_HUA_PILL.get());
                 output.accept(ModItems.SHAOLIN_PILL.get());
                 output.accept(ModItems.WUDANG_PILL.get());

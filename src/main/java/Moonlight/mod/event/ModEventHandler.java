@@ -360,6 +360,8 @@ public class ModEventHandler {
 
             if (!event.player.getCapability(DataHandler.INSTANCE).isPresent()) return;
             IPlayerData cap = event.player.getCapability(DataHandler.INSTANCE).resolve().orElseThrow();
+
+            // maybe add qi deviation tracker here instead?
             if (cap.isMeditating()) {
                 //if (event.player.tickCount % 20 == 0) {
                 cap.addQi((AMOUNT / 20));

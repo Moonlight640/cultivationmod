@@ -19,13 +19,13 @@ public class PillItem extends Item {
     private final int timeTakenToConsume;
     private final boolean save;
 
-    public PillItem(Properties pProperties, float qiAmountGainMultiplier, float qiExperienceGainMultiplier, float bodyExperienceGainMultiplier, int StimeTakenToConsume, boolean save) {
+    public PillItem(Properties pProperties, float qiAmountGainMultiplier, float qiExperienceGainMultiplier, float bodyExperienceGainMultiplier, Integer StimeTakenToConsume, boolean save) {
         super(pProperties);
 
         this.qiAmountGainMultiplier = qiAmountGainMultiplier;
         this.qiExperienceGainMultiplier = qiExperienceGainMultiplier;
         this.bodyExperienceGainMultiplier = bodyExperienceGainMultiplier;
-        this.timeTakenToConsume = (StimeTakenToConsume * 20);
+        this.timeTakenToConsume = StimeTakenToConsume != null ? (StimeTakenToConsume * 20) : -1;
         this.save = save;
     }
 
@@ -39,11 +39,13 @@ public class PillItem extends Item {
 
             cap.setConsumingPill(true);
 
-            cap.delayTickEvent(
-                    new StopConsumingPillAction(player.getUUID()),
-                    this.timeTakenToConsume,
-                    this.save
-            );
+            if (this.timeTakenToConsume != -1) {
+                cap.delayTickEvent(
+                        new StopConsumingPillAction(player.getUUID()),
+                        this.timeTakenToConsume,
+                        this.save
+                );
+            }
         }
 
         return result;

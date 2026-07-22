@@ -12,7 +12,7 @@ public class ModHudEvents {
     @SubscribeEvent
     public static void onRenderOverlay(RenderGuiOverlayEvent.Pre event) {
         if (event.getOverlay().id().equals(VanillaGuiOverlay.PLAYER_HEALTH.id())) {
-            event.setCanceled(true);
+            //event.setCanceled(true);
         }
     }
 }

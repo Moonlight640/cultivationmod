@@ -164,7 +164,9 @@ public class ClientAbilityHandler {
                 if (CultivationKeys.TOGGLE_MEDITATION.consumeClick()) {
                     IPlayerData cap = minecraft.player.getCapability(DataHandler.INSTANCE).resolve().orElseThrow();
 
-                    if (!cap.getInternalArtName().equals("No Manual")) {
+                    if (cap.hasQiDeviation()) {
+                        // DO WHATEVER
+                    } else if (!cap.getInternalArtName().equals("No Manual")) {
                         PacketHandler.sendToServer(new ToggleMeditatingC2S());
                         cap.setMeditating(!cap.isMeditating());
                     } else {

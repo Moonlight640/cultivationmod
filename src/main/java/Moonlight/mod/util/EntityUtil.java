@@ -63,6 +63,11 @@ public class EntityUtil {
         qiArmorBonus *= cap.getOutput();
         qiArmorToughnessBonus *= cap.getOutput();
 
+        if (cap.isFatigued()) {
+            qiArmorBonus *= 0.75;
+            qiArmorToughnessBonus *= 0.75;
+        }
+
         double maxArmor = 40;
         double maxToughness = maxArmor * 0.65;
 

@@ -137,6 +137,9 @@ public abstract class Ability {
         if (this.canDisable() && cap.hasDisable()) {
             return false;
         }
+        if (cap.isFatigued()) {
+            return false;
+        }
 
         for (Ability ability : this.getRequirements()) {
             if (!ability.isUnlocked(owner)) return false;
@@ -165,6 +168,9 @@ public abstract class Ability {
     public Status getStatus(LivingEntity owner) {
         IPlayerData cap = owner.getCapability(DataHandler.INSTANCE).resolve().orElseThrow();
         if (!(owner instanceof Player player && (player.getAbilities().instabuild))) {
+            if (cap.isFatigued()) {
+                return Status.FAILURE;
+            }
             if (this.canDisable() && cap.hasDisable()) {
                 return Status.DISABLE;
             }
@@ -199,7 +205,6 @@ public abstract class Ability {
         }
 
         Status status = this.getStatus(owner);
-
         if (status == Ability.Status.SUCCESS || status == Ability.Status.COOLDOWN) {
             this.charge(owner);
         }

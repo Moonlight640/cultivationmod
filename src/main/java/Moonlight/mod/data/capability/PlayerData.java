@@ -102,6 +102,7 @@ public class PlayerData implements IPlayerData {
 
     private int disable;
 
+    private PillMultiplier pillMultiplier;
 
 
 
@@ -176,6 +177,8 @@ public class PlayerData implements IPlayerData {
         this.cooldowns = new HashMap<>();
         this.disrupted = new HashMap<>();
         this.durations = new HashMap<>();
+
+        this.pillMultiplier = new PillMultiplier(0, 0, 0, 0);
 
     }
 
@@ -366,6 +369,10 @@ public class PlayerData implements IPlayerData {
         if (this.currentInternalArt != null) {
             amount *= this.currentInternalArt.getManualData().getQiGatheringBoost();
         }
+        if (this.pillMultiplier.getQiGainMultiplier() > 0) {
+            amount *= this.pillMultiplier.getQiGainMultiplier();
+        }
+        //TODO: FALLOFF of qiTalent and qiPotential need to be added
         amount *= this.qiTalent.getGrowthMultiplier();
 
         if (this.currentQi + amount > this.maxQi.getValue()) {
@@ -443,10 +450,13 @@ public class PlayerData implements IPlayerData {
     public boolean useQi(Double amount) {
         if (amount != null) {
             if (amount < 0) return false;
+            if (this.currentQi - amount <= 0) {
+                this.fatigued = true;
+            }
             this.currentQi -= Math.max(0, amount);
         }
 
-        return true;
+        return false;
     }
 
     @Override
@@ -1313,6 +1323,11 @@ public class PlayerData implements IPlayerData {
         nbt.putInt("disable", this.disable);
 
 
+        nbt.putDouble("pillMultiplierQi", this.pillMultiplier.getQiGainMultiplier());
+        nbt.putDouble("pillMultiplierBody", this.pillMultiplier.getBodyGainMultiplier());
+        nbt.putDouble("pillMultiplierQiExp", this.pillMultiplier.getQiExpGainMultiplier());
+        nbt.putDouble("pillMultiplierBodyExp", this.pillMultiplier.getBodyExpGainMultiplier());
+
         ListTag delayedTickEventsTag = new ListTag();
         for (DelayedTickEvent delayedTickEvent : this.delayedTickEvents) {
             delayedTickEventsTag.add(delayedTickEvent.serializeNBT());
@@ -1470,6 +1485,13 @@ public class PlayerData implements IPlayerData {
         this.consumingPill = nbt.getBoolean("consumingPill");
 
         this.disable = nbt.getInt("disable");
+
+
+        this.pillMultiplier = new PillMultiplier(
+                nbt.getDouble("pillMultiplierQi"),
+                nbt.getDouble("pillMultiplierBody"),
+                nbt.getDouble("pillMultiplierQiExp"),
+                nbt.getDouble("pillMultiplierBodyExp"));
 
 
         ListTag delayedTickEventsTag = nbt.getList("delayedTickEvents", Tag.TAG_COMPOUND);

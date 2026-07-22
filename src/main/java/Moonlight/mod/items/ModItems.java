@@ -4,6 +4,8 @@ import Moonlight.mod.CultivationMod;
 import Moonlight.mod.data.capability.playerStats.InternalArtData;
 import Moonlight.mod.items.custom.ManualItem;
 import Moonlight.mod.items.custom.PillItem;
+import net.minecraft.world.effect.MobEffectInstance;
+import net.minecraft.world.effect.MobEffects;
 import net.minecraft.world.food.FoodProperties;
 import net.minecraft.world.item.Item;
 import net.minecraftforge.eventbus.api.IEventBus;
@@ -32,9 +34,11 @@ public class ModItems {
 
 
 
-    public static final RegistryObject<Item> TEST_PILL = ITEMS.register("test_pill",
-            () -> new PillItem(new Item.Properties().stacksTo(16).food(new FoodProperties.Builder().alwaysEat().meat().build()),
-                    2.0f, 2.0f, 2.0f, 30, true));
+    public static final RegistryObject<Item> GRAIN_PILL = ITEMS.register("grain_pill",
+            () -> new PillItem(new Item.Properties().stacksTo(16).food(new FoodProperties.Builder()
+                    .alwaysEat().meat().nutrition(50).saturationMod(50)
+                    .effect(() -> new MobEffectInstance(MobEffects.SATURATION, (150 * 20), 255, false, false, false), 1.0F).build()),
+                    2.0f, 2.0f, 2.0f, null, false));
 
     public static final RegistryObject<Item> MOUNT_HUA_PILL = ITEMS.register("mount_hua_pill",
             () -> new PillItem(new Item.Properties().stacksTo(16).food(PillItem.PILL),
