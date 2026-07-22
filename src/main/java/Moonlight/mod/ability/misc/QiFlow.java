@@ -87,7 +87,7 @@ public class QiFlow extends Ability implements Ability.IToggled {
     @Override
     public void applyModifiers(LivingEntity owner) {
         double newSpeed = SPEED;
-        double maxSpeed = 5.0F;
+        double maxSpeed = 4.0F;
 
         IPlayerData cap = owner.getCapability(DataHandler.INSTANCE).resolve().orElseThrow();
         double ratio = cap.getCurrentQi() / cap.getMaxQi();
@@ -111,7 +111,7 @@ public class QiFlow extends Ability implements Ability.IToggled {
             }
 
             EntityUtil.applyModifier(owner, Attributes.MOVEMENT_SPEED, MOVEMENT_SPEED_UUID, "Movement speed",
-                    Math.min(maxSpeed, ((newSpeed * this.getPower(owner)) * cap.getOutput())), AttributeModifier.Operation.ADDITION);
+                    Math.min(maxSpeed, newSpeed * this.getPower(owner)), AttributeModifier.Operation.ADDITION);
         }
     }
 
@@ -165,13 +165,13 @@ public class QiFlow extends Ability implements Ability.IToggled {
                     IPlayerData attackerCap = attacker.getCapability(DataHandler.INSTANCE).resolve().orElseThrow();
 
                     if (HelperMethods.isMelee(source)) {
-                        double increase = 2.0F * CultivationUtil.getPower((attackerCap.getBodyExperience() + attackerCap.getQiExperience()));
+                        double increase = 0.75F * CultivationUtil.getPower((attackerCap.getBodyExperience() + attackerCap.getQiExperience()));
 
                         if (!(attacker instanceof Player player) || !player.getAbilities().instabuild) {
                             //
                         }
 
-                        event.setAmount(event.getAmount() + (float) increase);
+                        event.setAmount(event.getAmount() * (float) increase); // Was + changed for testing whether i want it multiplier or not.
                     }
                 }
             }

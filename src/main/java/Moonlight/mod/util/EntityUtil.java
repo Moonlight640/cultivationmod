@@ -60,8 +60,11 @@ public class EntityUtil {
         double qiArmorBonus = (cap.getQiExperience() + cap.getBodyExperience()) / 5000.0f;
         double qiArmorToughnessBonus = ((cap.getQiExperience() + cap.getBodyExperience()) / 5000.0f) * 0.5;
 
+        qiArmorBonus *= cap.getOutput();
+        qiArmorToughnessBonus *= cap.getOutput();
+
         double maxArmor = 40;
-        double maxToughness = maxArmor * 0.5;
+        double maxToughness = maxArmor * 0.65;
 
         if (currentArmor + qiArmorBonus > maxArmor) {
             qiArmorBonus = Math.max(0, maxArmor - currentArmor);
@@ -69,9 +72,6 @@ public class EntityUtil {
         if (currentToughness + qiArmorToughnessBonus > maxToughness) {
             qiArmorToughnessBonus = Math.max(0, maxToughness - currentToughness);
         }
-
-        qiArmorBonus *= cap.getOutput();
-        qiArmorToughnessBonus *= cap.getOutput();
 
         applyModifier(owner, Attributes.ARMOR, QI_ARMOR_UUID, "Qi Armor Bonus", qiArmorBonus, AttributeModifier.Operation.ADDITION);
         applyModifier(owner, Attributes.ARMOR_TOUGHNESS, QI_ARMOR_TOUGHNESS_UUID, "Qi Armor Toughness Bonus", qiArmorToughnessBonus, AttributeModifier.Operation.ADDITION);

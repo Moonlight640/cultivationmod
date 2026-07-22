@@ -331,8 +331,8 @@ public class Infinity extends Ability implements Ability.IToggled {
 
                 double distance = target.distanceTo(entityTarget);
                 double t = Math.min(distance / (RANGE + 5), 0.75);
-                double speedMultiplier = t * t * t * t;
-                if (distance <= 1.0F) speedMultiplier = 0.0001D;
+                double speedMultiplier = t * t * t;
+                if (distance <= 0.5F) speedMultiplier = 0.0001D;
 
                 entityTarget.setDeltaMovement(entityTarget.getDeltaMovement().scale(Math.min(speedMultiplier, distance * speedMultiplier)));//Math.min(SLOWING_FACTOR, distance * SLOWING_FACTOR)));
             }
