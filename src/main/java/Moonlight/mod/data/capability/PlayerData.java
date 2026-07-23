@@ -537,22 +537,22 @@ public class PlayerData implements IPlayerData {
 
     @Override
     public void setBodyTalent(TalentGrade talent) {
-
+        this.bodyTalent = talent;
     }
 
     @Override
     public void setQiTalent(TalentGrade talent) {
-
+        this.qiTalent = talent;
     }
 
     @Override
     public void setComprehensionTalent(TalentGrade talent) {
-
+        this.comprehensionTalent = talent;
     }
 
     @Override
     public void setWeaponTalent(WeaponType type, TalentGrade talent) {
-
+        this.weaponTalents.put(type, talent);
     }
 
     @Override
@@ -577,22 +577,22 @@ public class PlayerData implements IPlayerData {
 
     @Override
     public void setBodyPotential(PotentialGrade potential) {
-
+        this.bodyPotential = potential;
     }
 
     @Override
     public void setQiPotential(PotentialGrade potential) {
-
+        this.qiPotential = potential;
     }
 
     @Override
     public void setComprehensionPotential(PotentialGrade potential) {
-
+        this.comprehensionPotential = potential;
     }
 
     @Override
     public void setWeaponPotential(WeaponType type, PotentialGrade potential) {
-
+        this.weaponPotentials.put(type, potential);
     }
 
     @Override
