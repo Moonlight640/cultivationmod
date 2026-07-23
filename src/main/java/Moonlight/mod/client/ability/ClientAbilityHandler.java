@@ -7,6 +7,7 @@ import Moonlight.mod.ability.CultivationAbilities;
 import Moonlight.mod.ability.base.Ability;
 import Moonlight.mod.ability.misc.QiFlow;
 import Moonlight.mod.client.CultivationKeys;
+import Moonlight.mod.client.gui.screen.CultivationScreen;
 import Moonlight.mod.data.DataHandler;
 import Moonlight.mod.data.capability.IPlayerData;
 import Moonlight.mod.entity.base.IJumpInputListener;
@@ -131,8 +132,8 @@ public class ClientAbilityHandler {
 //                }
 
                 if (CultivationKeys.OPEN_CULTIVATION_MENU.consumeClick()) {
-                    PacketHandler.sendToServer(new GetPlayerDataC2S());
-                    //minecraft.setScreen(new CultivationScreen());
+                    //PacketHandler.sendToServer(new GetPlayerDataC2S());
+                    minecraft.setScreen(new CultivationScreen());
                 }
 
                 if (CultivationKeys.INCREASE_OUTPUT.consumeClick()) {

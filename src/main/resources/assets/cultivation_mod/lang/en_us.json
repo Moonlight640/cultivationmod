@@ -39,5 +39,8 @@
   "advancements.cultivation_mod.root.description": "Your journey of cultivation has just begun.",
 
   "gui.cultivation_mod.health_bar_overlay.output": "Output: %s",
-  "gui.cultivation_mod.health_bar_overlay.experience": "Experience: %s"
+  "gui.cultivation_mod.health_bar_overlay.experience": "Experience: %s",
+  "gui.cultivation_mod.stats": "Stats Tab",
+  "gui.cultivation_mod.stats.realm": "Realm: %1$s",
+  "gui.cultivation_mod.stats.qi": "Qi: %1$f/%1$f"
 }

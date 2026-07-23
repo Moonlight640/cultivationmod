@@ -18,7 +18,7 @@ import javax.annotation.Nullable;
 public class potentialCommand {
     public static void register(CommandDispatcher<CommandSourceStack> dispatcher) {
         LiteralCommandNode<CommandSourceStack> node = dispatcher.register(
-                Commands.literal("cultivationTalent")
+                Commands.literal("cultivationPotential")
                         .requires((player) -> player.hasPermission(2))
                         .then(Commands.argument("player", EntityArgument.entity())
 

@@ -69,9 +69,9 @@ public class ClientEvents {
             event.register(CultivationKeys.OPEN_CULTIVATION_MENU);
         }
 
-        @SubscribeEvent
-        public static void registerGuiOverlays(RegisterGuiOverlaysEvent event) {
-            event.registerAboveAll("health_bar", ClientOverlays.OVERLAY);
-        }
+//        @SubscribeEvent
+//        public static void registerGuiOverlays(RegisterGuiOverlaysEvent event) {
+//            event.registerAboveAll("health_bar", ClientOverlays.OVERLAY);
+//        }
     }
 }
